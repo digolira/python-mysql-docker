@@ -1,0 +1,29 @@
+
+services:
+  db:
+    image: mysql
+    container_name: first-mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: digo12
+      MYSQL_DATABASE: bancodeteste
+    networks: [mynetwork]
+
+##Get IP container is vinculated with:
+## sudo docker inspect first-mysql | grep IPAddress
+
+  python:
+    depends_on:
+      - db
+    container_name: first-python
+    build:
+      context: .
+    networks: [mynetwork]
+    restart: always
+    stdin_open: true
+    tty: true
+
+networks:
+  mynetwork:
+
+
