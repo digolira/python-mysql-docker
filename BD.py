@@ -14,8 +14,8 @@ class Connector():
             mycursor = db.cursor()
             break
         except:
-            print("error. no database")
-            sleep(3)
+            print("Could not connect to database. Retrying....")
+            sleep(4)
     
 
     def __init__(self):
