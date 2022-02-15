@@ -1,6 +1,7 @@
 import os
-import Opcoes
+import Opcoes as Opcoes
 from BD import Connector
+from textwrap import dedent
 
 
 def clear():
@@ -27,65 +28,67 @@ def main():
 
 
     def get_details(table_name: str):
-            list_all_table_elements(table_name)
-            option = input("Do you want to see details about a %s? Y/N\n"%table_name)
-            if (option in ["Y","y","YES", "Yes", "yes"]):
-                try:
-                    id = int(input("Insert %s ID:" %table_name))
-                    result = find_element_byId(id, table_name) 
-                    if result != None:
-                        print("%s ID: - %s"%(table_name, result))
-                        opposite = get_opposite(table_name)
-                        opt = input("""
-                            What do you want to do?
-                            1- Edit Name
-                            2- Delete Course
-                            3- Get %s List
-                            4- Leave to Menu
-                            Insert a number of your choice: """%opposite)
-                        try:
-                            opt = int(opt)
-                            if (opt == 1):
-                                edit_element(id, table_name)
-                            elif (opt == 2):
-                                delete_element(id, table_name)
-                            elif (opt == 3):
-                                get_vinculations(id, table_name)
-                            else:
-                                input("Leaving, press enter to continue.")
-                        except Exception as e:
-                            print(e)
-                            print("Invalid option.")
-                    else:
-                        return input("Couldn't find subject. Press enter to continue")
-                except Exception as e:
-                    print(e)
-                    input("Error, wrong format, ID only allows numbers. Press Enter to return to Menu")
-            elif (option in ["N","n","NO", "No", "no"]):
-                input("Cancelled. Press Enter.")
-                clear()
-            else:
-                input("Option invalid. Press enter to return to menu.")
+        
+        list_all_table_elements(table_name)
+        option = input("Do you want to see details about a %s? Y/N\n"%table_name)
+        if (option in ["Y","y","YES", "Yes", "yes"]):
+            try:
+                id = int(input("Insert %s ID:" %table_name))
+                result = find_element_byId(id, table_name) 
+                if result != None:
+                    clear()
+                    print("%s ID: - %s"%(table_name, result))
+                    opposite = get_opposite(table_name)
+                    opt = input(dedent("""
+                    What do you want to do?
+                    1- Edit Name
+                    2- Delete Course
+                    3- Get %s List
+                    4- Leave to Menu
+                    Insert a number of your choice: """%opposite))
+                    try:
+                        opt = int(opt)
+                        if (opt == 1):
+                            edit_element(id, table_name)
+                        elif (opt == 2):
+                            delete_element(id, table_name)
+                        elif (opt == 3):
+                            get_vinculations(id, table_name)
+                        else:
+                            input("Leaving, press enter to continue.")
+                    except Exception as e:
+                        print(e)
+                        print("Invalid option.")
+                else:
+                    return input("Couldn't find subject. Press enter to continue")
+            except Exception as e:
+                print(e)
+                input("Error, wrong format, ID only allows numbers. Press Enter to return to Menu")
+        elif (option in ["N","n","NO", "No", "no"]):
+            input("Cancelled. Press Enter.")
+            clear()
+        else:
+            input("Option invalid. Press enter to return to menu.")                                      
 
 
 
     def get_vinculations(id: int, table_name: str):
         result = find_element_byId(id, table_name) 
         if result != None:
-                        clear()
-                        print("{}\nID: {} - Name: {}\n".format(table_name, id,result))
-                        opposite = get_opposite(table_name)
-                        print("%s List: "%opposite)
-                        query = """
-                        SELECT Vinculations.%s_id, %s.name FROM Vinculations
-                        INNER JOIN %s
-                        ON Vinculations.%s_id = %s.%s_id
-                        WHERE Vinculations.%s_id = %i
-                        """ % (opposite.lower(), opposite, opposite, opposite.lower(), opposite, opposite.lower(),table_name.lower(), id)
-                        Connector.mycursor.execute(query)
-                        for element in Connector.mycursor:
-                            print("ID: %i - %s"% (element[0], element[1]))
-                        return input("Press enter to continue")
+            clear()
+            print("{}\nID: {} - Name: {}\n".format(table_name, id,result))
+            opposite = get_opposite(table_name)
+            print("%s List: "%opposite)
+            query = """
+            SELECT Vinculations.%s_id, %s.name FROM Vinculations
+            INNER JOIN %s
+            ON Vinculations.%s_id = %s.%s_id
+            WHERE Vinculations.%s_id = %i
+            """ % (opposite.lower(), opposite, opposite, opposite.lower(), opposite, opposite.lower(),table_name.lower(), id)
+            Connector.mycursor.execute(query)
+            for element in Connector.mycursor:
+                print("ID: %i - %s"% (element[0], element[1]))
+            return input("Press enter to continue")
         return input("Couldn't find this register. Press enter to continue")
 
 
@@ -195,7 +198,7 @@ def main():
                 graduation_type = int(input("Choose the type: \n" +
                                 "1- Graduation \n" +
                                 "2- Master \n" +
-                                "3- Doctorate \n"
+                                "3- Doctorate \n" +
                                 "4- Back to the main menu\n"))
             except:
                 print("Error! You need to select a number within the presented interval.")
@@ -316,6 +319,7 @@ def main():
 
 
     Connector()
+    clear()
     while(True):
 
         print("Welcome to the registry program")
@@ -324,9 +328,8 @@ def main():
                 "2- Subject List\n",
                 "3- Create New Course\n",
                 "4- Create New Subject\n",
-                "5- Vinculate Subject with Course\n"
+                "5- Vinculate Subject with Course\n",
                 "6- Exit Program\n")
-
         try:
             option = int(input("Select your option: "))
         except:

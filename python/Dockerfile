@@ -8,5 +8,3 @@ WORKDIR /project
 RUN pip install mysql-connector-python
 
 COPY . /project/
-
-CMD ["python", "./Main.py"]
