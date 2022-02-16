@@ -9,7 +9,7 @@ function deleting_image() {
 }
 
 function deleting_networks() {
-    sudo docker network prune -f
+    sudo docker network rm python-mysql-docker_mynetwork
 }
 
 function deleting_volumes(){
